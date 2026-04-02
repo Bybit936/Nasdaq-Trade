@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nasdaq Trade</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #000;
+  color: white;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+#authSection button {
+  width: 100%;
+  padding: 10px;
+  background: #ff8c00;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 0 10px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  margin: 0 5px;
+}
+
+.signup-btn {
+  background: #ff8c00;
+  color: black !important;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+
+.hero {
+  text-align: center;
+  padding: 50px 10px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.box {
+  background: #111;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">Nasdaq Trade</div>
+  <nav>
+    <a href="#">Markets</a>
+    <a href="#">Trade</a>
+    <a href="#" class="signup-btn" onclick="event.preventDefault(); scrollToAuth()">Sign Up</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Trusted Crypto Exchange Platform</h1>
+  <p>Deposit & Earn Profit Easily</p>
+
+  <button onclick="scrollToAuth()">Sign Up</button>
+</section>
+
+<section class="features">
+  <div class="box">Secure</div>
+  <div class="box">Fast Withdraw</div>
+  <div class="box">High Profit</div>
+  <div class="box">Referral</div>
+</section>
+
+<footer style="text-align:center; padding:20px;">© 2026 Nasdaq Trade</footer>
+
+<!-- AUTH -->
+<div id="authSection" style="max-width:400px; margin:50px auto; background:#111; padding:20px; border-radius:10px;">
+
+<h2>Sign Up</h2>
+<input id="name" placeholder="Name">
+<input id="email" placeholder="Email">
+<input id="password" placeholder="Password">
+<input id="confirm" placeholder="Confirm Password">
+<input id="ref" value="Jasaara@" placeholder="Referral">
+
+<div>
+  <input type="checkbox" id="terms"> Accept Terms
+</div>
+
+<button onclick="sendOTP()">Send OTP</button>
+
+<div id="otpBox" style="display:none;">
+  <input id="otp" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify</button>
+</div>
+
+<hr>
+
+<h2>Login</h2>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPass" placeholder="Password">
+<button onclick="login()">Login</button>
+
+</div>
+
+</div>
+
+<script>
+
+let generatedOTP = "";
+
+function scrollToAuth() {
+  document.getElementById("authSection").scrollIntoView({ behavior: "smooth" });
+}
+
+// SEND OTP
+function sendOTP() {
+  let pass = document.getElementById("password").value;
+  let confirm = document.getElementById("confirm").value;
+  let terms = document.getElementById("terms").checked;
+
+  if (pass !== confirm) return alert("Password not match");
+  if (!terms) return alert("Accept Terms");
+
+  generatedOTP = Math.floor(1000 + Math.random() * 9000);
+  alert("Your OTP: " + generatedOTP);
+
+  document.getElementById("otpBox").style.display = "block";
+}
+
+// VERIFY OTP
+function verifyOTP() {
+  let otp = document.getElementById("otp").value;
+
+  if (otp == generatedOTP) {
+
+    let balance = 0;
+    let ref = document.getElementById("ref").value;
+
+    if (ref === "Jasaara@") {
+      balance = 20;
+      alert("Referral bonus $20");
+    }
+
+    let user = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      balance: balance
+    };
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push(user);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    alert("Signup Successful!");
+    showDashboard(user);
+
+  } else {
+    alert("Wrong OTP");
+  }
+}
+
+// LOGIN
+function login() {
+  let email = document.getElementById("loginEmail").value;
+  let pass = document.getElementById("loginPass").value;
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  let user = users.find(u => u.email === email && u.password === pass);
+
+  if (!user) return alert("Wrong email or password");
+
+  localStorage.setItem("currentUser", JSON.stringify(user));
+  showDashboard(user);
+}
+
+// DASHBOARD
+function showDashboard(user) {
+  document.body.innerHTML = `
+  <div style="background:#000; color:white; min-height:100vh; padding:15px;">
+
+    <h2>${user.name}</h2>
+    <p>${user.email}</p>
+
+    <div style="background:#111; padding:15px; border-radius:10px;">
+      <h3>Balance: $${user.balance}</h3>
+    </div>
+
+    <button onclick="deposit()">Deposit</button>
+    <button onclick="withdraw()">Withdraw</button>
+
+    <h3>Market</h3>
+    <div id="market"></div>
+    <div id="chartBox"></div>
+
+  </div>
+  `;
+  loadMarket();
+}
+
+// MARKET
+async function loadMarket() {
+  let coins = ["BTC","ETH","BNB"];
+
+  let html = "";
+
+  for (let c of coins) {
+    let res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${c}USDT`);
+    let data = await res.json();
+
+    html += `
+    <div style="margin:5px; padding:10px; background:#111;">
+      <div onclick="openChart('${c}')">${c} - $${parseFloat(data.price).toFixed(2)}</div>
+      <button onclick="buy('${c}')">Buy</button>
+      <button onclick="sell('${c}')">Sell</button>
+    </div>
+    `;
+  }
+
+  document.getElementById("market").innerHTML = html;
+}
+
+// BUY
+function buy(coin) {
+  let user = JSON.parse(localStorage.getItem("currentUser"));
+  if (!user) return alert("Login first");
+
+  if (user.balance < 10) return alert("Not enough balance");
+
+  user.balance -= 10;
+  updateUser(user);
+
+  alert("Bought " + coin);
+  showDashboard(user);
+}
+
+// SELL
+function sell(coin) {
+  let user = JSON.parse(localStorage.getItem("currentUser"));
+  if (!user) return alert("Login first");
+
+  user.balance += 10;
+  updateUser(user);
+
+  alert("Sold " + coin);
+  showDashboard(user);
+}
+
+// UPDATE USER
+function updateUser(user) {
+  localStorage.setItem("currentUser", JSON.stringify(user));
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  users = users.map(u => u.email === user.email ? user : u);
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+function deposit() {
+  alert("Coming soon");
+}
+
+function withdraw() {
+  let user = JSON.parse(localStorage.getItem("currentUser"));
+  if (user.balance < 20000) {
+    alert("Minimum withdraw $20000");
+  } else {
+    alert("Withdraw sent");
+  }
+}
+
+// CHART
+function openChart(symbol) {
+  document.getElementById("chartBox").innerHTML = `
+    <iframe src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:${symbol}USDT&theme=dark"
+    style="width:100%; height:400px; border:none;"></iframe>
+  `;
+}
+
+</script>
+
+</body>
+</html>
