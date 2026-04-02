@@ -21,7 +21,7 @@ input {
   border-radius: 5px;
 }
 
-#authSection button {
+.signup-btn {
   width: 100%;
   padding: 10px;
   background: #ff8c00;
@@ -35,56 +35,31 @@ input {
 .container {
   max-width: 1100px;
   margin: auto;
-  padding: 0 10px;
+  padding: 10px;
 }
 
 header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-}
-
-.logo {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-nav a {
-  text-decoration: none;
-  color: white;
-  margin: 0 5px;
-}
-
-.signup-btn {
-  background: #ff8c00;
-  color: black !important;
-  padding: 6px 10px;
-  border-radius: 5px;
 }
 
 .hero {
   text-align: center;
-  padding: 50px 10px;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
+  margin-top: 50px;
 }
 
 .features {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-top: 30px;
 }
 
 .box {
   background: #111;
   padding: 15px;
-  border-radius: 10px;
   text-align: center;
+  border-radius: 10px;
 }
 </style>
 </head>
@@ -94,19 +69,13 @@ button {
 <div class="container">
 
 <header>
-  <div class="logo">Nasdaq Trade</div>
-  <nav>
-    <a href="#">Markets</a>
-    <a href="#">Trade</a>
-    <a href="#" class="signup-btn" onclick="event.preventDefault(); scrollToAuth()">Sign Up</a>
-  </nav>
+  <h3>Nasdaq Trade</h3>
+  <a href="#" onclick="event.preventDefault(); scrollToAuth()" style="color:orange;">Sign Up</a>
 </header>
 
 <section class="hero">
-  <h1>Trusted Crypto Exchange Platform</h1>
-  <p>Deposit & Earn Profit Easily</p>
-
-  <button onclick="scrollToAuth()">Sign Up</button>
+  <h1>Crypto Platform</h1>
+  <button class="signup-btn" onclick="scrollToAuth()">Sign Up</button>
 </section>
 
 <section class="features">
@@ -116,35 +85,35 @@ button {
   <div class="box">Referral</div>
 </section>
 
-<footer style="text-align:center; padding:20px;">© 2026 Nasdaq Trade</footer>
+<footer style="text-align:center; margin-top:20px;">© 2026</footer>
 
 <!-- AUTH -->
 <div id="authSection" style="max-width:400px; margin:50px auto; background:#111; padding:20px; border-radius:10px;">
 
 <h2>Sign Up</h2>
-<input id="name" placeholder="Name">
-<input id="email" placeholder="Email">
-<input id="password" placeholder="Password">
-<input id="confirm" placeholder="Confirm Password">
-<input id="ref" value="Jasaara@" placeholder="Referral">
+<input type="text" id="name" placeholder="Name">
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+<input type="password" id="confirm" placeholder="Confirm Password">
+<input type="text" id="ref" value="Jasaara@" placeholder="Referral Code">
 
 <div>
   <input type="checkbox" id="terms"> Accept Terms
 </div>
 
-<button onclick="sendOTP()">Send OTP</button>
+<button class="signup-btn" onclick="sendOTP()">Send OTP</button>
 
 <div id="otpBox" style="display:none;">
-  <input id="otp" placeholder="Enter OTP">
-  <button onclick="verifyOTP()">Verify</button>
+  <input type="text" id="otp" placeholder="Enter OTP">
+  <button class="signup-btn" onclick="verifyOTP()">Verify & Signup</button>
 </div>
 
 <hr>
 
 <h2>Login</h2>
-<input id="loginEmail" placeholder="Email">
-<input id="loginPass" placeholder="Password">
-<button onclick="login()">Login</button>
+<input type="email" id="loginEmail" placeholder="Email">
+<input type="password" id="loginPass" placeholder="Password">
+<button class="signup-btn" onclick="login()">Login</button>
 
 </div>
 
@@ -226,14 +195,12 @@ function login() {
 // DASHBOARD
 function showDashboard(user) {
   document.body.innerHTML = `
-  <div style="background:#000; color:white; min-height:100vh; padding:15px;">
+  <div style="padding:15px;">
 
     <h2>${user.name}</h2>
     <p>${user.email}</p>
 
-    <div style="background:#111; padding:15px; border-radius:10px;">
-      <h3>Balance: $${user.balance}</h3>
-    </div>
+    <h3>Balance: $${user.balance}</h3>
 
     <button onclick="deposit()">Deposit</button>
     <button onclick="withdraw()">Withdraw</button>
@@ -258,8 +225,10 @@ async function loadMarket() {
     let data = await res.json();
 
     html += `
-    <div style="margin:5px; padding:10px; background:#111;">
-      <div onclick="openChart('${c}')">${c} - $${parseFloat(data.price).toFixed(2)}</div>
+    <div style="margin:5px; background:#111; padding:10px;">
+      <div onclick="openChart('${c}')" style="cursor:pointer;">
+        ${c} - $${parseFloat(data.price).toFixed(2)}
+      </div>
       <button onclick="buy('${c}')">Buy</button>
       <button onclick="sell('${c}')">Sell</button>
     </div>
