@@ -61,6 +61,16 @@ header {
   text-align: center;
   border-radius: 10px;
 }
+  button {
+  width: 100%;
+  padding: 10px;
+  background: #ff8c00;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  margin-top: 5px;
+  font-weight: bold;
+  }
 </style>
 </head>
 
@@ -184,12 +194,15 @@ function login() {
 
   let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  let user = users.find(u => u.email === email && u.password === pass);
+  let saved = users.find(u => u.email === email && u.password === pass);
 
-  if (!user) return alert("Wrong email or password");
+  if (!saved) {
+    alert("Wrong email or password");
+    return;
+  }
 
-  localStorage.setItem("currentUser", JSON.stringify(user));
-  showDashboard(user);
+  localStorage.setItem("currentUser", JSON.stringify(saved));
+  showDashboard(saved);
 }
 
 // DASHBOARD
